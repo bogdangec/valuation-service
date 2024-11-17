@@ -20,7 +20,7 @@ The Valuation Service Backend is a Spring Boot application designed to provide r
 ### Clone the Repository
 ```bash
 git clone https://github.com/bogdangec/valuation-service.git    
-cd valuation-service-backend
+cd valuation-service
 ```
 
 ### Clone the Repository
