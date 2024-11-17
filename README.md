@@ -72,3 +72,5 @@ kafka.topic.stock-prices=<kafka_topic_name>
 # Alpha Vantage Configuration
 alpha-vantage.api.key=<your_api_key>
 ```
+## License
+Project licensed under the [Apache License](LICENSE).
