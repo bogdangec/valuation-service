@@ -5,7 +5,6 @@ import co.quest.xms.valuation.domain.model.ApiKey;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-
 import static co.quest.xms.valuation.domain.model.ApiKeyStatus.ACTIVE;
 import static java.time.LocalDateTime.now;
 

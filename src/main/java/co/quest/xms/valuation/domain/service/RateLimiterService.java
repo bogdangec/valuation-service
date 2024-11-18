@@ -14,7 +14,7 @@ public class RateLimiterService {
     /**
      * Allows or denies a request based on the rate limit for an API key.
      *
-     * @param apiKey The API key for the request.
+     * @param apiKey    The API key for the request.
      * @param rateLimit The maximum allowed requests per time window.
      * @return True if the request is allowed, false otherwise.
      */

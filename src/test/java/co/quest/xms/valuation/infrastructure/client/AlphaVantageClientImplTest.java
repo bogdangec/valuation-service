@@ -1,7 +1,6 @@
 package co.quest.xms.valuation.infrastructure.client;
 
 import co.quest.xms.valuation.domain.model.StockPrice;
-import co.quest.xms.valuation.infrastructure.client.dto.TimeSeriesData;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -10,13 +9,11 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
-import java.util.Collections;
 import java.util.List;
 
 import static co.quest.xms.valuation.util.TestConstants.*;
 import static co.quest.xms.valuation.util.TestUtils.loadJsonFromFile;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 

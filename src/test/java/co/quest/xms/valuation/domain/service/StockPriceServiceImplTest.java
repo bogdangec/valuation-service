@@ -130,7 +130,8 @@ class StockPriceServiceImplTest {
         String symbol = "AAPL";
         StockPrice stockPrice = StockPrice.builder().symbol(symbol).build();
         when(alphaVantageClient.fetchRealtimeQuote(symbol)).thenReturn(stockPrice);
-        doThrow(new DataAccessException("Database error") {}).when(stockPriceRepository).save(stockPrice);
+        doThrow(new DataAccessException("Database error") {
+        }).when(stockPriceRepository).save(stockPrice);
 
         // When
         Exception exception = assertThrows(DataAccessException.class, () -> stockPriceService.getRealtimeQuote(symbol));
