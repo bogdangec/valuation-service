@@ -12,4 +12,6 @@ public final class TestUtils {
         ClassPathResource resource = new ClassPathResource(fileName);
         return copyToString(resource.getInputStream(), UTF_8);
     }
+
+    private TestUtils() {}
 }
