@@ -16,19 +16,19 @@ public class ApiKeyValidationService {
 
     private final RateLimiterService rateLimiterService;
 
-    public boolean validateApiKey(String apiKey) {
-        ApiKey key = apiKeyRepository.findByKey(apiKey).orElseThrow(() -> new RuntimeException("Invalid API key"));
+    public boolean validateApiKey(String key) {
+        ApiKey apiKey = apiKeyRepository.findByKey(key).orElseThrow(() -> new RuntimeException("Invalid API key"));
 
-        if (key.getStatus() != ACTIVE) {
+        if (apiKey.getStatus() != ACTIVE) {
             throw new RuntimeException("API key is not active");
         }
 
-        if (key.getExpirationDate().isBefore(now())) {
+        if (apiKey.getExpirationDate().isBefore(now())) {
             throw new RuntimeException("API key has expired");
         }
 
         // Check rate limit
-        if (!rateLimiterService.allowRequest(apiKey, key.getRateLimit())) {
+        if (!rateLimiterService.allowRequest(key, apiKey.getRateLimit())) {
             throw new RuntimeException("Rate limit exceeded for API key");
         }
 

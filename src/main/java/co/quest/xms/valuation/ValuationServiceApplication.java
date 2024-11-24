@@ -11,5 +11,4 @@ public class ValuationServiceApplication {
     public static void main(String[] args) {
         SpringApplication.run(ValuationServiceApplication.class, args);
     }
-
 }

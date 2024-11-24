@@ -5,6 +5,8 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.Optional;
 
-public interface ApiKeyRepository extends MongoRepository<ApiKey, String> {
+public interface ApiKeyRepository {
     Optional<ApiKey> findByKey(String key);
+
+    ApiKey save(ApiKey apiKey);
 }
