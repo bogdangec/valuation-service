@@ -1,4 +1,4 @@
-package co.quest.xms.valuation.domain.service;
+package co.quest.xms.valuation.infrastructure.rateLimiting;
 
 import org.springframework.stereotype.Service;
 

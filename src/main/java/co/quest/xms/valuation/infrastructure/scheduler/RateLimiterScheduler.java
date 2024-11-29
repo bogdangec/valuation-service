@@ -1,6 +1,6 @@
 package co.quest.xms.valuation.infrastructure.scheduler;
 
-import co.quest.xms.valuation.domain.service.RateLimiterService;
+import co.quest.xms.valuation.infrastructure.rateLimiting.RateLimiterService;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 

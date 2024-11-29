@@ -11,6 +11,7 @@ import java.util.List;
 
 /**
  * Implementation of the StockPriceService interface.
+ * <p/>
  * This service handles fetching stock prices, saving them to MongoDB, and publishing to Kafka.
  */
 @Service
