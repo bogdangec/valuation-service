@@ -19,7 +19,7 @@ public class MongoUserRepository implements UserRepository {
     @Override
     public Optional<User> findByUsername(String username) {
         return Optional.ofNullable(mongoTemplate.findOne(
-                Query.query(Criteria.where("username").is(username)),
+                Query.query(Criteria.where("email").is(username)),
                 User.class));
     }
 

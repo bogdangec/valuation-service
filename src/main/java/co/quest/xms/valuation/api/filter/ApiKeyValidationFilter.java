@@ -8,12 +8,11 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-import org.springframework.web.util.UrlPathHelper;
 
 import java.io.IOException;
 
 import static co.quest.xms.valuation.util.Constants.API_KEY_HEADER_NAME;
-import static org.springframework.http.HttpStatus.UNAUTHORIZED;
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
 @Component
 @RequiredArgsConstructor
@@ -26,7 +25,7 @@ public class ApiKeyValidationFilter extends OncePerRequestFilter {
         String apiKey = request.getHeader(API_KEY_HEADER_NAME);
 
         if (apiKey == null || apiKey.isEmpty()) {
-            response.sendError(UNAUTHORIZED.value(), "Missing API Key");
+            response.sendError(BAD_REQUEST.value(), "Missing API Key");
             return;
         }
 
