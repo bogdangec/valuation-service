@@ -16,6 +16,6 @@ public final class Constants {
             .key("TEST_API_KEY")
             .expirationDate(LocalDateTime.now().plusDays(1))
             .status(ACTIVE)
-            .rateLimit(42)
+            .rateLimitPerMinute(42)
             .build();
 }

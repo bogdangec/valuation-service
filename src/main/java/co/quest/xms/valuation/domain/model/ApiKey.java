@@ -6,6 +6,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Data
@@ -18,12 +19,17 @@ public class ApiKey {
     private String id;
     @Field("api_key")
     private String key;
-    @Field("rate_limit")
-    private int rateLimit;
+    @Field("rate_limit_per_minute")
+    private int rateLimitPerMinute;
+    @Field("daily_limit")
+    private int dailyLimit;
     @Field("expiration_date")
     private LocalDateTime expirationDate;
     @Field("status")
     private ApiKeyStatus status;
     @Field("user_id")
     private String userId;
+
+    private int requestsMadeToday;  // Tracks requests made today
+    private LocalDate lastRequestDate; // Tracks the last date when requests were made
 }

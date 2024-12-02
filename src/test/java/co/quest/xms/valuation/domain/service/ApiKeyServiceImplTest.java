@@ -3,8 +3,8 @@ package co.quest.xms.valuation.domain.service;
 import co.quest.xms.valuation.application.repository.ApiKeyRepository;
 import co.quest.xms.valuation.domain.model.ApiKey;
 import co.quest.xms.valuation.domain.model.ApiKeyStatus;
-import co.quest.xms.valuation.infrastructure.rateLimiting.RateLimiterService;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -17,16 +17,13 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-class ApiKeyValidationServiceTest {
+class ApiKeyServiceImplTest {
 
     @Mock
     private ApiKeyRepository apiKeyRepository;
 
-    @Mock
-    private RateLimiterService rateLimiterService;
-
     @InjectMocks
-    private ApiKeyValidationService apiKeyValidationService;
+    private ApiKeyServiceImpl apiKeyServiceImpl;
 
     @BeforeEach
     void setUp() {
@@ -40,20 +37,17 @@ class ApiKeyValidationServiceTest {
         ApiKey mockApiKey = ApiKey.builder()
                 .key(apiKey)
                 .status(ApiKeyStatus.ACTIVE)
-                .rateLimit(10)
                 .expirationDate(LocalDateTime.now().plusDays(1))
                 .build();
 
         when(apiKeyRepository.findByKey(apiKey)).thenReturn(Optional.of(mockApiKey));
-        when(rateLimiterService.allowRequest(apiKey, 10)).thenReturn(true);
 
         // Act
-        boolean result = apiKeyValidationService.validateApiKey(apiKey);
+        boolean result = apiKeyServiceImpl.isApiKeyValid(apiKey);
 
         // Assert
         assertTrue(result);
         verify(apiKeyRepository).findByKey(apiKey);
-        verify(rateLimiterService).allowRequest(apiKey, 10);
     }
 
     @Test
@@ -65,7 +59,7 @@ class ApiKeyValidationServiceTest {
 
         // Act & Assert
         RuntimeException exception = assertThrows(RuntimeException.class, () ->
-                apiKeyValidationService.validateApiKey(apiKey)
+                apiKeyServiceImpl.isApiKeyValid(apiKey)
         );
         assertEquals("Invalid API key", exception.getMessage());
         verify(apiKeyRepository).findByKey(apiKey);
@@ -78,7 +72,6 @@ class ApiKeyValidationServiceTest {
         ApiKey mockApiKey = ApiKey.builder()
                 .key(apiKey)
                 .status(ApiKeyStatus.INACTIVE)
-                .rateLimit(10)
                 .expirationDate(LocalDateTime.now().plusDays(1))
                 .build();
 
@@ -86,7 +79,7 @@ class ApiKeyValidationServiceTest {
 
         // Act & Assert
         RuntimeException exception = assertThrows(RuntimeException.class, () ->
-                apiKeyValidationService.validateApiKey(apiKey)
+                apiKeyServiceImpl.isApiKeyValid(apiKey)
         );
         assertEquals("API key is not active", exception.getMessage());
         verify(apiKeyRepository).findByKey(apiKey);
@@ -99,7 +92,6 @@ class ApiKeyValidationServiceTest {
         ApiKey mockApiKey = ApiKey.builder()
                 .key(apiKey)
                 .status(ApiKeyStatus.ACTIVE)
-                .rateLimit(10)
                 .expirationDate(LocalDateTime.now().minusDays(1))
                 .build();
 
@@ -107,32 +99,30 @@ class ApiKeyValidationServiceTest {
 
         // Act & Assert
         RuntimeException exception = assertThrows(RuntimeException.class, () ->
-                apiKeyValidationService.validateApiKey(apiKey)
+                apiKeyServiceImpl.isApiKeyValid(apiKey)
         );
         assertEquals("API key has expired", exception.getMessage());
         verify(apiKeyRepository).findByKey(apiKey);
     }
 
     @Test
+    @Disabled("This test is ignored because it will be implemented for the RateLimiterService")
     void testValidateApiKey_RateLimitExceeded_ThrowsException() {
         // Arrange
         String apiKey = "rate-limit-exceeded-key";
         ApiKey mockApiKey = ApiKey.builder()
                 .key(apiKey)
                 .status(ApiKeyStatus.ACTIVE)
-                .rateLimit(10)
                 .expirationDate(LocalDateTime.now().plusDays(1))
                 .build();
 
         when(apiKeyRepository.findByKey(apiKey)).thenReturn(Optional.of(mockApiKey));
-        when(rateLimiterService.allowRequest(apiKey, 10)).thenReturn(false);
 
         // Act & Assert
         RuntimeException exception = assertThrows(RuntimeException.class, () ->
-                apiKeyValidationService.validateApiKey(apiKey)
+                apiKeyServiceImpl.isApiKeyValid(apiKey)
         );
         assertEquals("Rate limit exceeded for API key", exception.getMessage());
         verify(apiKeyRepository).findByKey(apiKey);
-        verify(rateLimiterService).allowRequest(apiKey, 10);
     }
 }

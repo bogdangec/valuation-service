@@ -6,11 +6,13 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @Builder
 @Document(collection = "users")
 public class User {
+
     @Id
     private String id;
     private String username;
@@ -18,5 +20,6 @@ public class User {
     private String passwordHash;
     private LocalDateTime createdAt;
     private String role;
+    private List<ApiKey> apiKeys;
 }
 

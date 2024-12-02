@@ -46,7 +46,7 @@ public class JwtService implements TokenService {
     /**
      * Generate a JWT for the given user details and claims.
      *
-     * @param claims Additional claims to include in the token.
+     * @param claims  Additional claims to include in the token.
      * @param subject The subject of the token (typically the user ID or email).
      * @return A signed JWT as a String.
      */
