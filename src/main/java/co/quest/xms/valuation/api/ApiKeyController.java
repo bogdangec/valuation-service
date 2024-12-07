@@ -14,7 +14,7 @@ import static co.quest.xms.valuation.api.mapper.ApiKeyMapper.toDto;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/key")
+@RequestMapping("/api/api-keys")
 public class ApiKeyController {
 
     private final ApiKeyService apiKeyService;

@@ -1,6 +1,7 @@
 package co.quest.xms.valuation.application.service;
 
 import co.quest.xms.valuation.domain.exception.ApiKeyNotFoundException;
+import co.quest.xms.valuation.domain.exception.InvalidApiKeyException;
 import co.quest.xms.valuation.domain.model.ApiKey;
 
 import java.util.List;
@@ -38,5 +39,18 @@ public interface ApiKeyService {
      * @throws ApiKeyNotFoundException if the API key is not found or does not belong to the user.
      */
     void deactivateApiKeyForUser(String userId, String apiKey);
+
+    /**
+     * Validates the provided API key and retrieves the corresponding {@link ApiKey} entity.
+     * <p>
+     * If the API key is valid, it returns the associated {@link ApiKey} entity. If the API key is
+     * invalid, an exception is thrown.
+     *
+     * @param apiKey the API key value to validate and retrieve.
+     * @return the {@link ApiKey} entity associated with the provided key.
+     * @throws ApiKeyNotFoundException if the API key does not exist.
+     * @throws InvalidApiKeyException if the API key exists but is not in an {@code ACTIVE} state or if the API key is expired.
+     */
+    ApiKey validateAndRetrieveApiKey(String apiKey);
 }
 

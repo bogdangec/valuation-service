@@ -9,7 +9,8 @@ public final class ApiKeyMapper {
                 apiKey.getRateLimitPerMinute(),
                 apiKey.getDailyLimit(),
                 apiKey.getExpirationDate(),
-                apiKey.getStatus().toString()
+                apiKey.getStatus().toString(),
+                apiKey.getRequestsMadeToday()
         );
     }
 }

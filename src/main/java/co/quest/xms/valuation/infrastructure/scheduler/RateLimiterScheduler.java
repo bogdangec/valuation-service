@@ -1,17 +1,15 @@
 package co.quest.xms.valuation.infrastructure.scheduler;
 
 import co.quest.xms.valuation.infrastructure.rateLimiting.RateLimiterService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 public class RateLimiterScheduler {
 
     private final RateLimiterService rateLimiterService;
-
-    public RateLimiterScheduler(RateLimiterService rateLimiterService) {
-        this.rateLimiterService = rateLimiterService;
-    }
 
     /**
      * Resets the request count every minute.

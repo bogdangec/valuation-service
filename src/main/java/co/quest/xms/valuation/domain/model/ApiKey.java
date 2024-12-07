@@ -15,7 +15,6 @@ import java.time.LocalDateTime;
 public class ApiKey {
 
     @Id
-    @Field("_id")
     private String id;
     @Field("api_key")
     private String key;

@@ -50,14 +50,19 @@ public class ApiKeyServiceImpl implements ApiKeyService {
         apiKeyRepository.save(key);
     }
 
-    public void deactivateApiKey(String apiKey) {
-        ApiKey key = apiKeyRepository.findByKey(apiKey).orElseThrow(() -> new ApiKeyNotFoundException("API key not found"));
-        key.setStatus(INACTIVE);
-        apiKeyRepository.save(key);
+    @Override
+    public ApiKey validateAndRetrieveApiKey(String apiKeyValue) {
+        ApiKey apiKey = apiKeyRepository.findByKey(apiKeyValue)
+                .orElseThrow(() -> new ApiKeyNotFoundException("API key not found: " + apiKeyValue));
+
+        if (isApiKeyInactiveOrExpired(apiKey)) {
+            throw new InvalidApiKeyException("API key is not active or expired: " + apiKey);
+        }
+
+        return apiKey;
     }
 
-    public boolean isApiKeyValid(String apiKey) {
-        ApiKey key = apiKeyRepository.findByKey(apiKey).orElseThrow(() -> new InvalidApiKeyException("Invalid API key"));
-        return key.getStatus() == ACTIVE && key.getExpirationDate().isAfter(now());
+    private static boolean isApiKeyInactiveOrExpired(ApiKey apiKey) {
+        return INACTIVE.equals(apiKey.getStatus()) || apiKey.getExpirationDate().isBefore(now());
     }
 }

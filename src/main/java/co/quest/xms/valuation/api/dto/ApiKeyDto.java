@@ -7,6 +7,7 @@ public record ApiKeyDto(
         int rateLimitPerMinute,
         int dailyLimit,
         LocalDateTime expirationDate,
-        String status
+        String status,
+        int requestsMadeToday
 ) {
 }
