@@ -25,6 +25,10 @@ public class ApiKeyValidationFilter extends OncePerRequestFilter {
     private final ApiKeyService apiKeyService;
     private final RateLimiterService rateLimiterService;
 
+    private static boolean isNullOrEmpty(String apiKeyValue) {
+        return apiKeyValue == null || apiKeyValue.isEmpty();
+    }
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String apiKeyValue = request.getHeader(API_KEY_HEADER_NAME);
@@ -46,9 +50,5 @@ public class ApiKeyValidationFilter extends OncePerRequestFilter {
         } catch (RuntimeException ex) {
             response.sendError(FORBIDDEN.value(), ex.getMessage());
         }
-    }
-
-    private static boolean isNullOrEmpty(String apiKeyValue) {
-        return apiKeyValue == null || apiKeyValue.isEmpty();
     }
 }

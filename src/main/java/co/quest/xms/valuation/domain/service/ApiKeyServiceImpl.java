@@ -21,6 +21,10 @@ public class ApiKeyServiceImpl implements ApiKeyService {
 
     private final ApiKeyRepository apiKeyRepository;
 
+    private static boolean isApiKeyInactiveOrExpired(ApiKey apiKey) {
+        return INACTIVE.equals(apiKey.getStatus()) || apiKey.getExpirationDate().isBefore(now());
+    }
+
     @Override
     public ApiKey generateApiKeyForUser(String userId) {
         String key = randomUUID().toString();
@@ -60,9 +64,5 @@ public class ApiKeyServiceImpl implements ApiKeyService {
         }
 
         return apiKey;
-    }
-
-    private static boolean isApiKeyInactiveOrExpired(ApiKey apiKey) {
-        return INACTIVE.equals(apiKey.getStatus()) || apiKey.getExpirationDate().isBefore(now());
     }
 }

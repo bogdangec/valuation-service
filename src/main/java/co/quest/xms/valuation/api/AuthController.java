@@ -1,11 +1,9 @@
 package co.quest.xms.valuation.api;
 
-import co.quest.xms.valuation.api.dto.AuthResponse;
-import co.quest.xms.valuation.api.dto.LoginRequest;
-import co.quest.xms.valuation.api.dto.RegisterRequest;
+import co.quest.xms.valuation.api.dto.*;
 import co.quest.xms.valuation.application.service.TokenService;
+import co.quest.xms.valuation.application.service.UserService;
 import co.quest.xms.valuation.domain.model.User;
-import co.quest.xms.valuation.domain.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -35,6 +33,19 @@ public class AuthController {
         User authenticatedUser = userService.authenticate(request.email(), request.password());
         String jwt = tokenService.generateToken(authenticatedUser);
         return ResponseEntity.ok(new AuthResponse(jwt, toDto(authenticatedUser)));
+    }
+
+    @PostMapping("/password")
+    public ResponseEntity<Void> changePassword(@RequestBody @Valid ChangePasswordRequest request, @RequestHeader("x-user-id") String userId) {
+        userService.changePassword(userId, request.currentPassword(), request.newPassword());
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/username")
+    public ResponseEntity<UserDto> updateUsername(@RequestBody @Valid ChangeUsernameRequest request, @RequestHeader("x-user-id") String userId) {
+        User user = userService.updateUsername(userId, request.newUsername());
+        return ResponseEntity.ok(toDto(user));
+
     }
 }
 

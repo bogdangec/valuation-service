@@ -40,7 +40,7 @@ public class ApiKeyController {
     @GetMapping
     public ResponseEntity<List<ApiKeyDto>> getApiKeys(@RequestHeader("x-user-id") String userId) {
         List<ApiKey> apiKeys = apiKeyService.getApiKeysForUser(userId);
-        return ResponseEntity.ok(apiKeys.stream().map(ApiKeyMapper::toDto).toList());
+        return ResponseEntity.ok(apiKeys.stream().map(ApiKeyMapper::toSafeDto).toList());
     }
 
     /**

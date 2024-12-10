@@ -49,7 +49,7 @@ public interface ApiKeyService {
      * @param apiKey the API key value to validate and retrieve.
      * @return the {@link ApiKey} entity associated with the provided key.
      * @throws ApiKeyNotFoundException if the API key does not exist.
-     * @throws InvalidApiKeyException if the API key exists but is not in an {@code ACTIVE} state or if the API key is expired.
+     * @throws InvalidApiKeyException  if the API key exists but is not in an {@code ACTIVE} state or if the API key is expired.
      */
     ApiKey validateAndRetrieveApiKey(String apiKey);
 }
