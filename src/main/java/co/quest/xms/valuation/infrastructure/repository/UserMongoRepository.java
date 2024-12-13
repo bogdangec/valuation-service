@@ -14,7 +14,7 @@ import static org.springframework.data.mongodb.core.query.Query.query;
 
 @Repository
 @RequiredArgsConstructor
-public class MongoUserRepository implements UserRepository {
+public class UserMongoRepository implements UserRepository {
 
     private final MongoTemplate mongoTemplate;
 

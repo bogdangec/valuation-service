@@ -16,7 +16,7 @@ import static org.springframework.data.mongodb.core.query.Criteria.where;
 
 @Repository
 @RequiredArgsConstructor
-public class MongoStockPriceRepository implements StockPriceRepository {
+public class StockPriceMongoRepository implements StockPriceRepository {
 
     private final MongoTemplate mongoTemplate;
 

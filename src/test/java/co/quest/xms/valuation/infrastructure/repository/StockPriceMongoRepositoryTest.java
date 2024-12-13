@@ -19,11 +19,11 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DataMongoTest
 @ActiveProfiles("test")
-@Import(MongoStockPriceRepository.class)
-class MongoStockPriceRepositoryTest {
+@Import(StockPriceMongoRepository.class)
+class StockPriceMongoRepositoryTest {
 
     @Autowired
-    private MongoStockPriceRepository repository;
+    private StockPriceMongoRepository repository;
 
     @Autowired
     private MongoTemplate mongoTemplate;
