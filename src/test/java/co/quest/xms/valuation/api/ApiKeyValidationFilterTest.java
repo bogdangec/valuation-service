@@ -42,7 +42,10 @@ class ApiKeyValidationFilterTest {
         when(apiKeyService.validateAndRetrieveApiKey(EXPIRED_API_KEY_VALUE)).thenThrow(new InvalidApiKeyException("Expired API key"));
         when(apiKeyService.validateAndRetrieveApiKey(INACTIVE_API_KEY_VALUE)).thenThrow(new InvalidApiKeyException("Inactive API key"));
 
+        when(apiKeyService.validateAndRetrieveApiKey(API_KEY_EXCEEDED_DAILY_LIMIT_VALUE)).thenReturn(API_KEY_EXCEEDED_DAILY_LIMIT);
         when(rateLimiterService.isRequestAllowed(API_KEY_EXCEEDED_DAILY_LIMIT)).thenThrow(new RateLimitExceededException("Daily request limit exceeded for API key"));
+
+        when(apiKeyService.validateAndRetrieveApiKey(API_KEY_EXCEEDED_LIMIT_PER_MINUTE_VALUE)).thenReturn(API_KEY_EXCEEDED_LIMIT_PER_MINUTE);
         when(rateLimiterService.isRequestAllowed(API_KEY_EXCEEDED_LIMIT_PER_MINUTE)).thenThrow(new RateLimitExceededException("Per-minute request limit exceeded for API key"));
     }
 
@@ -71,14 +74,14 @@ class ApiKeyValidationFilterTest {
     void testApiKeyExceedsDailyLimitRejectsRequest() throws Exception {
         mockMvc.perform(get(STOCK_PRICES_URL_FOR_AAPL)
                         .header(API_KEY_HEADER_NAME, API_KEY_EXCEEDED_DAILY_LIMIT_VALUE))
-                .andExpect(status().isUnauthorized());
+                .andExpect(status().isTooManyRequests());
     }
 
     @Test
     void testApiKeyExceedsLimitPerMinuteRejectsRequest() throws Exception {
         mockMvc.perform(get(STOCK_PRICES_URL_FOR_AAPL)
                         .header(API_KEY_HEADER_NAME, API_KEY_EXCEEDED_LIMIT_PER_MINUTE_VALUE))
-                .andExpect(status().isUnauthorized());
+                .andExpect(status().isTooManyRequests());
     }
 
     @Test

@@ -10,9 +10,10 @@ public final class ApiKeyMapper {
     public static ApiKeyDto toDto(ApiKey apiKey) {
         return new ApiKeyDto(apiKey.getKey(),
                 apiKey.getRateLimitPerMinute(),
-                apiKey.getDailyLimit(),
+                apiKey.getRateLimitPerDay(),
                 apiKey.getExpirationDate(),
-                apiKey.getStatus().toString(),
+                apiKey.getStatus().name(),
+                apiKey.getApiTier().name(),
                 apiKey.getRequestsMadeToday()
         );
     }
@@ -20,9 +21,10 @@ public final class ApiKeyMapper {
     public static ApiKeyDto toSafeDto(ApiKey apiKey) {
         return new ApiKeyDto(EMPTY_KEY,
                 apiKey.getRateLimitPerMinute(),
-                apiKey.getDailyLimit(),
+                apiKey.getRateLimitPerDay(),
                 apiKey.getExpirationDate(),
-                apiKey.getStatus().toString(),
+                apiKey.getStatus().name(),
+                apiKey.getApiTier().name(),
                 apiKey.getRequestsMadeToday()
         );
     }

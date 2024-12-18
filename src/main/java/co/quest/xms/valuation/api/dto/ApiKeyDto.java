@@ -8,6 +8,7 @@ public record ApiKeyDto(
         int dailyLimit,
         LocalDateTime expirationDate,
         String status,
+        String tier,
         int requestsMadeToday
 ) {
 }

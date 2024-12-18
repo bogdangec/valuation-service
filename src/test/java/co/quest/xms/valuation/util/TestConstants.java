@@ -5,11 +5,11 @@ import co.quest.xms.valuation.domain.model.ApiKeyStatus;
 import co.quest.xms.valuation.domain.model.StockPrice;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 import static co.quest.xms.valuation.domain.model.ApiKeyStatus.ACTIVE;
 import static co.quest.xms.valuation.domain.model.ApiKeyStatus.INACTIVE;
+import static co.quest.xms.valuation.domain.model.ApiTier.FREE;
 import static java.time.LocalDateTime.now;
 import static java.util.Arrays.asList;
 
@@ -51,7 +51,7 @@ public final class TestConstants {
 
     public static final StockPrice MOCK_GOOGLE_PRICE = StockPrice.builder()
             .symbol(GOOGL_SYMBOL)
-            .timestamp(LocalDateTime.now())
+            .timestamp(now())
             .open(2750.0)
             .high(2775.0)
             .low(2725.0)
@@ -63,8 +63,8 @@ public final class TestConstants {
             .id("1")
             .key("valid-api-key")
             .rateLimitPerMinute(5)
-            .dailyLimit(100)
-            .expirationDate(LocalDateTime.now().plusDays(1))
+            .rateLimitPerDay(100)
+            .expirationDate(now().plusDays(1))
             .status(ApiKeyStatus.ACTIVE)
             .userId("user123")
             .requestsMadeToday(10)
@@ -75,8 +75,8 @@ public final class TestConstants {
             .id("2")
             .key("expired-api-key")
             .rateLimitPerMinute(5)
-            .dailyLimit(100)
-            .expirationDate(LocalDateTime.now().minusDays(1))
+            .rateLimitPerDay(100)
+            .expirationDate(now().minusDays(1))
             .status(ACTIVE)
             .userId("user123")
             .requestsMadeToday(10)
@@ -88,8 +88,8 @@ public final class TestConstants {
             .id("3")
             .key("inactive-api-key")
             .rateLimitPerMinute(5)
-            .dailyLimit(100)
-            .expirationDate(LocalDateTime.now().plusDays(1))
+            .rateLimitPerDay(100)
+            .expirationDate(now().plusDays(1))
             .status(INACTIVE)
             .userId("user123")
             .requestsMadeToday(10)
@@ -97,26 +97,28 @@ public final class TestConstants {
             .build();
 
     public static final ApiKey API_KEY_EXCEEDED_LIMIT_PER_MINUTE = ApiKey.builder()
-            .id("3")
-            .key("inactive-api-key")
-            .rateLimitPerMinute(0)
-            .dailyLimit(100)
-            .expirationDate(LocalDateTime.now().plusDays(1))
+            .id("4")
+            .key("active-api-key")
+            .rateLimitPerMinute(0) // Already exceeded the limit per minute
+            .rateLimitPerDay(100)
+            .expirationDate(now().plusDays(1))
             .status(ACTIVE)
+            .apiTier(FREE)
             .userId("user123")
             .requestsMadeToday(10)
             .lastRequestDate(LocalDate.now())
             .build();
 
     public static final ApiKey API_KEY_EXCEEDED_DAILY_LIMIT = ApiKey.builder()
-            .id("3")
-            .key("inactive-api-key")
-            .rateLimitPerMinute(0)
-            .dailyLimit(100)
-            .expirationDate(LocalDateTime.now().plusDays(1))
+            .id("5")
+            .key("active-api-key")
+            .rateLimitPerMinute(10)
+            .rateLimitPerDay(100)
+            .expirationDate(now().plusDays(1))
             .status(ACTIVE)
+            .apiTier(FREE)
             .userId("user123")
-            .requestsMadeToday(11) // Already exceeded the daily limit
+            .requestsMadeToday(111) // Already exceeded the daily limit
             .lastRequestDate(LocalDate.now())
             .build();
 

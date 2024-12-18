@@ -4,15 +4,19 @@ import co.quest.xms.valuation.application.repository.ApiKeyRepository;
 import co.quest.xms.valuation.domain.exception.RateLimitExceededException;
 import co.quest.xms.valuation.domain.model.ApiKey;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.concurrent.ConcurrentHashMap;
 
+import static co.quest.xms.valuation.domain.model.ApiTier.FREE;
+import static java.time.Duration.between;
+
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class RateLimiterService {
@@ -25,9 +29,10 @@ public class RateLimiterService {
     private int windowSeconds;
 
     public boolean isRequestAllowed(ApiKey apiKey) {
-        checkDailyLimit(apiKey);
-        checkPerMinuteLimit(apiKey.getKey(), apiKey.getRateLimitPerMinute());
-
+        if (FREE.equals(apiKey.getApiTier())) {
+            checkDailyLimit(apiKey);
+            checkPerMinuteLimit(apiKey.getKey(), apiKey.getRateLimitPerMinute());
+        }
         recordRequest(apiKey.getKey(), apiKey);
 
         return true;
@@ -42,7 +47,7 @@ public class RateLimiterService {
             apiKeyRepository.save(apiKey);
         }
 
-        if (apiKey.getRequestsMadeToday() >= apiKey.getDailyLimit()) {
+        if (apiKey.getRequestsMadeToday() >= apiKey.getRateLimitPerDay()) {
             throw new RateLimitExceededException("Daily request limit exceeded for API key");
         }
     }
@@ -65,11 +70,13 @@ public class RateLimiterService {
     @Scheduled(fixedRateString = "${rate.limiter.reset.interval.milliseconds:60000}")
     public void resetRequestCounts() {
         LocalDateTime currentTime = LocalDateTime.now();
+        log.info("Reset counts at: {}", currentTime);
         requestCounts.forEach((apiKey, count) -> {
             LocalDateTime lastRequestTime = lastRequestTimestamps.get(apiKey);
-            if (lastRequestTime == null || Duration.between(lastRequestTime, currentTime).getSeconds() >= windowSeconds) {
+            if (lastRequestTime == null || between(lastRequestTime, currentTime).getSeconds() >= windowSeconds) {
                 requestCounts.remove(apiKey);
                 lastRequestTimestamps.remove(apiKey);
+                log.info("Removing API key: {}", apiKey);
             }
         });
     }

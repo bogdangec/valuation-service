@@ -20,12 +20,14 @@ public class ApiKey {
     private String key;
     @Field("rate_limit_per_minute")
     private int rateLimitPerMinute;
-    @Field("daily_limit")
-    private int dailyLimit;
+    @Field("rate_limit_per_day")
+    private int rateLimitPerDay;
     @Field("expiration_date")
     private LocalDateTime expirationDate;
     @Field("status")
     private ApiKeyStatus status;
+    @Field("api_tier")
+    private ApiTier apiTier;
     @Field("user_id")
     private String userId;
 

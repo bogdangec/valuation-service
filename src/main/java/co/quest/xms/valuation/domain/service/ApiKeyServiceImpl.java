@@ -12,12 +12,17 @@ import java.util.List;
 
 import static co.quest.xms.valuation.domain.model.ApiKeyStatus.ACTIVE;
 import static co.quest.xms.valuation.domain.model.ApiKeyStatus.INACTIVE;
+import static co.quest.xms.valuation.domain.model.ApiTier.FREE;
 import static java.time.LocalDateTime.now;
 import static java.util.UUID.randomUUID;
 
 @Service
 @RequiredArgsConstructor
 public class ApiKeyServiceImpl implements ApiKeyService {
+    private static final int INITIAL_RATE_LIMIT_PER_MINUTE = 10;
+    private static final int INITIAL_RATE_LIMIT_PER_DAY = 100;
+    private static final int INITIAL_ACTIVE_DAYS = 30 * 6;
+    private static final int INITIAL_REQUESTS = 0;
 
     private final ApiKeyRepository apiKeyRepository;
 
@@ -27,18 +32,7 @@ public class ApiKeyServiceImpl implements ApiKeyService {
 
     @Override
     public ApiKey generateApiKeyForUser(String userId) {
-        String key = randomUUID().toString();
-        ApiKey apiKey = ApiKey.builder()
-                .key(key)
-                .rateLimitPerMinute(10)
-                .dailyLimit(100)
-                .expirationDate(now().plusDays(30))
-                .status(ACTIVE)
-                .userId(userId)
-                .requestsMadeToday(0)
-                .lastRequestDate(now().toLocalDate())
-                .build();
-        return apiKeyRepository.save(apiKey);
+        return apiKeyRepository.save(buildApiKey(userId));
     }
 
     @Override
@@ -64,5 +58,19 @@ public class ApiKeyServiceImpl implements ApiKeyService {
         }
 
         return apiKey;
+    }
+
+    private static ApiKey buildApiKey(String userId) {
+        return ApiKey.builder()
+                .key(randomUUID().toString())
+                .rateLimitPerMinute(INITIAL_RATE_LIMIT_PER_MINUTE)
+                .rateLimitPerDay(INITIAL_RATE_LIMIT_PER_DAY)
+                .expirationDate(now().plusDays(INITIAL_ACTIVE_DAYS))
+                .status(ACTIVE)
+                .apiTier(FREE)
+                .userId(userId)
+                .requestsMadeToday(INITIAL_REQUESTS)
+                .lastRequestDate(now().toLocalDate())
+                .build();
     }
 }
