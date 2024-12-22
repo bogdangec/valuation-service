@@ -1,5 +1,6 @@
 package co.quest.xms.valuation.api;
 
+import co.quest.xms.valuation.api.controller.StockPriceController;
 import co.quest.xms.valuation.api.filter.ApiKeyValidationFilter;
 import co.quest.xms.valuation.application.service.ApiKeyService;
 import co.quest.xms.valuation.domain.exception.InvalidApiKeyException;

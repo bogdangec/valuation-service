@@ -1,6 +1,7 @@
 package co.quest.xms.valuation.api.filter;
 
 import co.quest.xms.valuation.application.service.ApiKeyService;
+import co.quest.xms.valuation.domain.exception.ApiKeyNotFoundException;
 import co.quest.xms.valuation.domain.exception.InvalidApiKeyException;
 import co.quest.xms.valuation.domain.exception.RateLimitExceededException;
 import co.quest.xms.valuation.domain.model.ApiKey;
@@ -10,6 +11,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -18,6 +20,7 @@ import java.io.IOException;
 import static co.quest.xms.valuation.util.Constants.API_KEY_HEADER_NAME;
 import static org.springframework.http.HttpStatus.*;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class ApiKeyValidationFilter extends OncePerRequestFilter {
@@ -34,6 +37,7 @@ public class ApiKeyValidationFilter extends OncePerRequestFilter {
         String apiKeyValue = request.getHeader(API_KEY_HEADER_NAME);
 
         if (isNullOrEmpty(apiKeyValue)) {
+            log.warn("Missing API key in request");
             response.sendError(BAD_REQUEST.value(), "Missing API Key");
             return;
         }
@@ -43,12 +47,15 @@ public class ApiKeyValidationFilter extends OncePerRequestFilter {
             if (rateLimiterService.isRequestAllowed(apiKey)) {
                 filterChain.doFilter(request, response);
             }
+        } catch (ApiKeyNotFoundException e) {
+            log.error("API key not found: {}", apiKeyValue, e);
+            response.sendError(UNAUTHORIZED.value(), e.getMessage());
         } catch (InvalidApiKeyException e) {
+            log.error("Invalid API Key: {}", apiKeyValue, e);
             response.sendError(UNAUTHORIZED.value(), e.getMessage());
         } catch (RateLimitExceededException e) {
+            log.error("Rate limit exceeded: {}", apiKeyValue, e);
             response.sendError(TOO_MANY_REQUESTS.value(), e.getMessage());
-        } catch (RuntimeException ex) {
-            response.sendError(FORBIDDEN.value(), ex.getMessage());
         }
     }
 }

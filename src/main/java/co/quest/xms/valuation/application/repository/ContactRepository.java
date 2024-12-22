@@ -8,6 +8,7 @@ import co.quest.xms.valuation.domain.model.ContactMessage;
 public interface ContactRepository {
     /**
      * Saves a contact message.
+     *
      * @param contactMessage The contact message to save.
      * @return The saved contact message.
      */

@@ -1,4 +1,4 @@
-package co.quest.xms.valuation.api;
+package co.quest.xms.valuation.api.controller;
 
 import co.quest.xms.valuation.domain.model.StockPrice;
 import co.quest.xms.valuation.domain.service.StockPriceService;

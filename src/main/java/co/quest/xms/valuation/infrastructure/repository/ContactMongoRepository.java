@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 public class ContactMongoRepository implements ContactRepository {
 
     private final MongoTemplate mongoTemplate;
+
     @Override
     public ContactMessage save(ContactMessage contactMessage) {
         return mongoTemplate.save(contactMessage);
