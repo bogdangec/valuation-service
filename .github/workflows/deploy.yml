@@ -1,0 +1,69 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout the repository
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Set up Java environment
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          java-version: '21' # Use Java 21
+          distribution: 'corretto'
+
+      # Cache Gradle dependencies
+      - name: Cache Gradle dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.gradle/caches
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: ${{ runner.os }}-gradle
+
+      # Build the project
+      - name: Build with Gradle
+        run: ./gradlew clean build -x test
+
+      # Add VPS to known_hosts
+      - name: Add VPS to known_hosts
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -H ${{ secrets.VPS_HOST }} >> ~/.ssh/known_hosts
+
+      # Deploy to VPS
+      - name: Deploy to VPS
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: 22
+          script: |
+            # Stop the existing service (ignore errors if it doesn't exist)
+            sudo systemctl stop valuation.service || true
+            
+            # Backup the current JAR if it exists
+            if [ -f /opt/valuation/app.jar ]; then
+              sudo mv /opt/valuation/app.jar /opt/valuation/app-$(date +%F-%T).jar
+            fi
+            
+            # Create the destination folder if it doesn't exist
+            mkdir -p /opt/valuation
+
+            # Copy the new JAR file to the server
+            scp build/libs/valuation-service-0.0.1-SNAPSHOT.jar ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/opt/valuation/
+            
+            # Move the JAR to a standard name
+            sudo mv /opt/valuation/valuation-service-0.0.1-SNAPSHOT.jar /opt/valuation/app.jar
+
+            # Start the service
+            sudo systemctl start valuation.service
