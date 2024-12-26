@@ -33,11 +33,26 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew clean build -x test
 
-      # Add VPS to known_hosts
+      # Verify artifacts
+      - name: Verify Build Artifacts
+        run: ls -l build/libs/
+
+      #Add VPS to known_hosts
       - name: Add VPS to known_hosts
         run: |
           mkdir -p ~/.ssh
           ssh-keyscan -H ${{ secrets.VPS_HOST }} >> ~/.ssh/known_hosts
+          cat ~/.ssh/known_hosts
+
+      # Copy JAR to VPS
+      - name: Copy JAR to VPS
+        uses: appleboy/scp-action@v0.1.3
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: build/libs/valuation-service-0.0.1-SNAPSHOT.jar
+          target: /opt/valuation/
 
       # Deploy to VPS
       - name: Deploy to VPS
@@ -48,22 +63,16 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 22
           script: |
-            # Stop the existing service (ignore errors if it doesn't exist)
+            # Stop the existing service
             sudo systemctl stop valuation.service || true
-            
-            # Backup the current JAR if it exists
+      
+            # Backup the existing JAR file
             if [ -f /opt/valuation/app.jar ]; then
-              sudo mv /opt/valuation/app.jar /opt/valuation/app-$(date +%F-%T).jar
+            sudo mv /opt/valuation/app.jar /opt/valuation/app-$(date +%F-%T).jar
             fi
-            
-            # Create the destination folder if it doesn't exist
-            mkdir -p /opt/valuation
-
-            # Copy the new JAR file to the server
-            scp build/libs/valuation-service-0.0.1-SNAPSHOT.jar ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/opt/valuation/
-            
-            # Move the JAR to a standard name
+      
+            # Rename the uploaded JAR to the standard name
             sudo mv /opt/valuation/valuation-service-0.0.1-SNAPSHOT.jar /opt/valuation/app.jar
-
+      
             # Start the service
             sudo systemctl start valuation.service
