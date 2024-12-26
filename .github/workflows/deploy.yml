@@ -68,11 +68,11 @@ jobs:
       
             # Backup the existing JAR file
             if [ -f /opt/valuation/app.jar ]; then
-            sudo mv /opt/valuation/app.jar /opt/valuation/app-$(date +%F-%T).jar
+              sudo mv /opt/valuation/app.jar /opt/valuation/app-$(date +%F-%T).jar
             fi
       
             # Rename the uploaded JAR to the standard name
-            sudo mv /opt/valuation/valuation-service-0.0.1-SNAPSHOT.jar /opt/valuation/app.jar
+            sudo mv /opt/valuation/build/libs/valuation-service-0.0.1-SNAPSHOT.jar /opt/valuation/app.jar
       
             # Start the service
             sudo systemctl start valuation.service
