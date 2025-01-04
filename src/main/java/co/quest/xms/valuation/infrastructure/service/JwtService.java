@@ -1,4 +1,4 @@
-package co.quest.xms.valuation.infrastructure.jwt;
+package co.quest.xms.valuation.infrastructure.service;
 
 import co.quest.xms.valuation.application.service.TokenService;
 import co.quest.xms.valuation.domain.model.User;

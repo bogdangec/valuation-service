@@ -1,6 +1,9 @@
 package co.quest.xms.valuation.application.client;
 
 import co.quest.xms.valuation.domain.model.StockPrice;
+import co.quest.xms.valuation.infrastructure.client.dto.AlphaVantageBalanceSheetResponse;
+import co.quest.xms.valuation.infrastructure.client.dto.AlphaVantageIncomeStatementResponse;
+import co.quest.xms.valuation.infrastructure.client.dto.AlphaVantageOverviewResponse;
 
 import java.util.List;
 
@@ -30,4 +33,28 @@ public interface AlphaVantageClient {
      * @return A StockPrice object with the current real-time quote.
      */
     StockPrice fetchRealtimeQuote(String symbol);
+
+    /**
+     * Fetch the income statement data for a given stock symbol.
+     *
+     * @param symbol The stock symbol.
+     * @return Income statement response.
+     */
+    AlphaVantageIncomeStatementResponse getIncomeStatement(String symbol);
+
+    /**
+     * Fetch the balance sheet data for a given stock symbol.
+     *
+     * @param symbol The stock symbol.
+     * @return Balance sheet response.
+     */
+    AlphaVantageBalanceSheetResponse getBalanceSheet(String symbol);
+
+    /**
+     * Fetch the overview data for a given stock symbol.
+     *
+     * @param symbol The stock symbol.
+     * @return Overview response.
+     */
+    AlphaVantageOverviewResponse getOverview(String symbol);
 }
