@@ -7,9 +7,10 @@ import lombok.Data;
 @Builder
 public class FinancialMetrics {
     private Double ebit; // Earnings Before Interest and Taxes
-    private Double marketCapitalization;
-    private Double totalDebt;
     private Double netFixedAssets;
     private Double netWorkingCapital;
+
+    private Double marketCapitalization;
+    private Double totalDebt;
     private Double cash;
 }

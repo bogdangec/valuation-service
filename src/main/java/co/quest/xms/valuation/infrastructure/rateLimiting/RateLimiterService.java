@@ -76,7 +76,7 @@ public class RateLimiterService {
             if (lastRequestTime == null || between(lastRequestTime, currentTime).getSeconds() >= windowSeconds) {
                 requestCounts.remove(apiKey);
                 lastRequestTimestamps.remove(apiKey);
-                log.info("Removing API key: {}", apiKey);
+                log.info("Removing API key from cache: {}", apiKey);
             }
         });
     }

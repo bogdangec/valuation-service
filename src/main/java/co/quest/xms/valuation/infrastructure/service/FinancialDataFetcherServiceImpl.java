@@ -3,6 +3,9 @@ package co.quest.xms.valuation.infrastructure.service;
 import co.quest.xms.valuation.application.client.AlphaVantageClient;
 import co.quest.xms.valuation.application.service.FinancialDataFetcherService;
 import co.quest.xms.valuation.domain.model.FinancialMetrics;
+import co.quest.xms.valuation.infrastructure.client.dto.AlphaVantageBalanceSheetResponse;
+import co.quest.xms.valuation.infrastructure.client.dto.AlphaVantageIncomeStatementResponse;
+import co.quest.xms.valuation.infrastructure.client.dto.AlphaVantageOverviewResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -38,18 +41,18 @@ public class FinancialDataFetcherServiceImpl implements FinancialDataFetcherServ
         }
 
         // Fetch data from Alpha Vantage endpoints
-        var incomeStatement = alphaVantageClient.getIncomeStatement(symbol);
-        var balanceSheet = alphaVantageClient.getBalanceSheet(symbol);
-        var overview = alphaVantageClient.getOverview(symbol);
+        AlphaVantageIncomeStatementResponse incomeStatement = alphaVantageClient.getIncomeStatement(symbol);
+        AlphaVantageBalanceSheetResponse balanceSheet = alphaVantageClient.getBalanceSheet(symbol);
+        AlphaVantageOverviewResponse overview = alphaVantageClient.getOverview(symbol);
 
         // Aggregate data into a FinancialMetrics object
         FinancialMetrics metrics = FinancialMetrics.builder()
                 .ebit(incomeStatement.getEbit())
+                .netFixedAssets(balanceSheet.getPropertyPlantEquipment())
+                .netWorkingCapital(balanceSheet.getTotalCurrentAssets() - balanceSheet.getTotalCurrentLiabilities())
                 .marketCapitalization(overview.getMarketCapitalization())
-                .totalDebt(balanceSheet.getTotalDebt())
-                .netFixedAssets(balanceSheet.getNetFixedAssets())
-                .netWorkingCapital(balanceSheet.getCurrentAssets() - balanceSheet.getCurrentLiabilities())
-                .cash(balanceSheet.getCash())
+                .totalDebt(balanceSheet.getLongTermDebt() + balanceSheet.getShortTermDebt())
+                .cash(balanceSheet.getCashAndCashEquivalentsAtCarryingValue())
                 .build();
 
         // Cache the result from Alpha Vantage

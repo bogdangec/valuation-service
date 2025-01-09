@@ -1,8 +1,8 @@
 package co.quest.xms.valuation.infrastructure.client;
 
 import co.quest.xms.valuation.domain.model.StockPrice;
-import co.quest.xms.valuation.infrastructure.client.dto.GlobalQuoteData;
-import co.quest.xms.valuation.infrastructure.client.dto.TimeSeriesData;
+import co.quest.xms.valuation.infrastructure.client.dto.*;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -74,5 +74,60 @@ public class AlphaVantageResponseParser {
                 .close(entry.getClose())
                 .volume(entry.getVolume())
                 .build();
+    }
+
+    /**
+     * Parses the Alpha Vantage Income Statement response.
+     */
+    public AlphaVantageIncomeStatementResponse parseIncomeStatementResponse(String jsonResponse) {
+        try {
+            JsonNode rootNode = objectMapper.readTree(jsonResponse);
+            JsonNode annualReports = rootNode.get("annualReports").get(0); // Assume latest report
+
+            return AlphaVantageIncomeStatementResponse.builder()
+                    .symbol(rootNode.get("symbol").asText())
+                    .ebit(annualReports.get("ebit").asDouble())
+                    .build();
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Failed to parse income statement response", e);
+        }
+    }
+
+    /**
+     * Parses the Alpha Vantage Balance Sheet response.
+     */
+    public AlphaVantageBalanceSheetResponse parseBalanceSheetResponse(String jsonResponse) {
+        try {
+            JsonNode rootNode = objectMapper.readTree(jsonResponse);
+            JsonNode annualReports = rootNode.get("annualReports").get(0); // Assume latest report
+
+            return AlphaVantageBalanceSheetResponse.builder()
+                    .symbol(rootNode.get("symbol").asText())
+                    .propertyPlantEquipment(annualReports.get("propertyPlantEquipment").asDouble())
+                    .totalCurrentAssets(annualReports.get("totalCurrentAssets").asDouble())
+                    .totalCurrentLiabilities(annualReports.get("totalCurrentLiabilities").asDouble())
+                    .longTermDebt(annualReports.get("longTermDebt").asDouble())
+                    .shortTermDebt(annualReports.get("shortTermDebt").asDouble())
+                    .cashAndCashEquivalentsAtCarryingValue(annualReports.get("cashAndCashEquivalentsAtCarryingValue").asDouble())
+                    .build();
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Failed to parse balance sheet response", e);
+        }
+    }
+
+    /**
+     * Parses the Alpha Vantage Overview response.
+     */
+    public AlphaVantageOverviewResponse parseOverviewResponse(String jsonResponse) {
+        try {
+            JsonNode rootNode = objectMapper.readTree(jsonResponse);
+
+            return AlphaVantageOverviewResponse.builder()
+                    .symbol(rootNode.get("Symbol").asText())
+                    .marketCapitalization(rootNode.get("MarketCapitalization").asDouble())
+                    .build();
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Failed to parse balance sheet response", e);
+        }
     }
 }

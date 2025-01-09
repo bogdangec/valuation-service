@@ -45,21 +45,22 @@ public class AlphaVantageClientImpl implements AlphaVantageClient {
         return parser.parseRealtimeQuote(response, symbol);
     }
 
-    @Override
     public AlphaVantageIncomeStatementResponse getIncomeStatement(String symbol) {
-        String url = format("https://www.alphavantage.co/query?function=INCOME_STATEMENT&symbol=%s&apikey=%s", symbol, apiKey);
-        return restTemplate.getForObject(url, AlphaVantageIncomeStatementResponse.class);
+        String url = String.format("https://www.alphavantage.co/query?function=INCOME_STATEMENT&symbol=%s&apikey=%s", symbol, apiKey);
+        String jsonResponse = restTemplate.getForObject(url, String.class);
+        return parser.parseIncomeStatementResponse(jsonResponse);
     }
 
-    @Override
     public AlphaVantageBalanceSheetResponse getBalanceSheet(String symbol) {
-        String url = format("https://www.alphavantage.co/query?function=BALANCE_SHEET&symbol=%s&apikey=%s", symbol, apiKey);
-        return restTemplate.getForObject(url, AlphaVantageBalanceSheetResponse.class);
+        String url = String.format("https://www.alphavantage.co/query?function=BALANCE_SHEET&symbol=%s&apikey=%s", symbol, apiKey);
+        String jsonResponse = restTemplate.getForObject(url, String.class);
+        return parser.parseBalanceSheetResponse(jsonResponse);
     }
 
     @Override
     public AlphaVantageOverviewResponse getOverview(String symbol) {
         String url = format("https://www.alphavantage.co/query?function=OVERVIEW&symbol=%s&apikey=%s", symbol, apiKey);
-        return restTemplate.getForObject(url, AlphaVantageOverviewResponse.class);
+        String jsonResponse = restTemplate.getForObject(url, String.class);
+        return parser.parseOverviewResponse(jsonResponse);
     }
 }
