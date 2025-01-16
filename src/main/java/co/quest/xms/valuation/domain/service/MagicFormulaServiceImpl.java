@@ -20,9 +20,9 @@ public class MagicFormulaServiceImpl implements MagicFormulaService {
     public MagicFormulaResult calculateMagicFormula(String symbol) {
         FinancialMetrics metrics = financialDataFetcherService.fetchFinancialMetrics(symbol);
 
-        double earningsYield = metricsService.calculateEarningsYield(metrics);
         double returnOnCapital = metricsService.calculateReturnOnCapital(metrics);
+        double earningsYield = metricsService.calculateEarningsYield(metrics);
 
-        return new MagicFormulaResult(symbol, earningsYield, returnOnCapital);
+        return new MagicFormulaResult(symbol, returnOnCapital, earningsYield);
     }
 }
