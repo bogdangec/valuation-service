@@ -25,6 +25,7 @@ dependencies {
 	implementation("org.springframework.security:spring-security-crypto:6.3.3")
 	implementation("jakarta.validation:jakarta.validation-api:3.1.0")
 	implementation("io.jsonwebtoken:jjwt:0.12.6")
+	implementation("com.stripe:stripe-java:28.2.0")
 
 	compileOnly("org.projectlombok:lombok:1.18.34")
 

@@ -26,14 +26,14 @@ class MagicFormulaControllerTest {
     void calculateMagicFormula_shouldReturnMagicFormulaResult() throws Exception {
         // Arrange
         String symbol = "AAPL";
-        MagicFormulaResult result = new MagicFormulaResult(symbol, 0.1, 0.2);
+        MagicFormulaResult result = new MagicFormulaResult(symbol, 0.2, 0.1);
         when(magicFormulaService.calculateMagicFormula(symbol)).thenReturn(result);
 
         // Act & Assert
         mockMvc.perform(get("/api/v1/magic-formula/{symbol}", symbol))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.symbol").value(symbol))
-                .andExpect(jsonPath("$.earningsYield").value(0.1))
-                .andExpect(jsonPath("$.returnOnCapital").value(0.2));
+                .andExpect(jsonPath("$.returnOnCapital").value(0.2))
+                .andExpect(jsonPath("$.earningsYield").value(0.1));
     }
 }

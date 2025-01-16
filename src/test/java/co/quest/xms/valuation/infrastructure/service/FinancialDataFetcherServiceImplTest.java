@@ -30,18 +30,17 @@ class FinancialDataFetcherServiceImplTest {
         // Arrange
         String symbol = "AAPL";
 
-        AlphaVantageIncomeStatementResponse incomeStatement = new AlphaVantageIncomeStatementResponse();
-        incomeStatement.setEbit(500.0);
+        AlphaVantageIncomeStatementResponse incomeStatement = AlphaVantageIncomeStatementResponse.builder().ebit(500.0).build();
 
-        AlphaVantageBalanceSheetResponse balanceSheet = new AlphaVantageBalanceSheetResponse();
-        balanceSheet.setCurrentAssets(200.0);
-        balanceSheet.setCurrentLiabilities(100.0);
-        balanceSheet.setNetFixedAssets(150.0);
-        balanceSheet.setCash(50.0);
-        balanceSheet.setTotalDebt(300.0);
+        AlphaVantageBalanceSheetResponse balanceSheet = AlphaVantageBalanceSheetResponse.builder()
+                .totalCurrentAssets(200.0)
+                .totalCurrentLiabilities(100.0)
+                .propertyPlantEquipment(150.0)
+                .cashAndCashEquivalentsAtCarryingValue(50.0)
+                .longTermDebt(300.0)
+                .build();
 
-        AlphaVantageOverviewResponse overview = new AlphaVantageOverviewResponse();
-        overview.setMarketCapitalization(2000.0);
+        AlphaVantageOverviewResponse overview = AlphaVantageOverviewResponse.builder().marketCapitalization(2000.0).build();
 
         // First call (cache miss)
         when(alphaVantageClient.getIncomeStatement(symbol)).thenReturn(incomeStatement);
